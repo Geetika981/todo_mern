@@ -17,8 +17,10 @@ app.use(cookieParser());
 
 //route import
 import todoRoutes from "./routes/todo.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 app.use("/api/v1/todo",todoRoutes);
+app.use("/api/v1/user",userRoutes)
 
 
 
