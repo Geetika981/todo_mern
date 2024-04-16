@@ -1,21 +1,56 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
-  const [data, setData] = useState({});
+  const [formData, setFormData] = useState({});
+  const [error,setError]=useState(false);
+  const [message,setMessage]=useState("");
+  const [loading,setLoading]=useState(false);
+  const naviagte=useNavigate();
   const handleData = (e) => {
-    e.preventDefault();
+    setMessage("");
+    setError(false);
+    setFormData({
+      ...formData,[e.target.id]:e.target.value
+    })
   };
+  // console.log(formData);
+  const handleSubmit=async(e)=>{
+    try {
+      setLoading(true);
+      e.preventDefault();
+      const res=await fetch('http://localhost:8000/api/v1/user/register',{
+        method:"POST",
+        headers:{
+          'Content-Type':"application/json"
+        },
+        body:JSON.stringify(formData)
+      })
+      const data=await res.json();
+      setMessage(data.message);
+      if(data.success===false){
+        setLoading(false);
+        setError(true);
+        return;
+      }
+      setLoading(false);
+      console.log(data);
+      naviagte('/sign-in')
+    } catch (error) {
+      setLoading(false);
+    }
+  }
   return (
     <div className="p-4 max-w-lg mx-auto">
       <h1 className="text-3xl my-7 text-center font-bold ">Sign Up</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input
           type="text"
           className="border p-3 rounded-lg hover:p-4"
           placeholder="username*"
           id="username"
+        
           onChange={handleData}
         />
         <input
@@ -39,8 +74,8 @@ function SignUp() {
           id="about"
           onChange={handleData}
         />
-        <button className="bg-slate-700 p-4 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-60 cursor-pointer">
-          Sign Up
+        <button disabled={loading} className="bg-slate-700 p-4 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-60 cursor-pointer">
+          {loading?'Loading...':'Sign Up'}
         </button>
       </form>
       <div className="flex gap-3 mt-5">
@@ -49,6 +84,7 @@ function SignUp() {
           <span className="text-blue-700">Sign in</span>
         </Link>
       </div>
+      <p className={` mt-5 uppercase ${error?'text-red-500':'text-green-500'}`} >{message}</p>
     </div>
   );
 }

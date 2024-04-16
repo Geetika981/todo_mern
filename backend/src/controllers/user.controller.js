@@ -23,14 +23,16 @@ const generateAccessAndRefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, about, password } = req.body;
   if (!username || !email || !password) {
-    throw new ApiError(400, "all stared fields are required");
+    return res.status(400).json(new ApiResponse(400,{},"all stared fields are required"))
+    // throw new ApiError(404, "atleast one field is required");
   }
 
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (existedUser) {
-    throw new ApiError(400, "username or email already exists");
+    return res.status(400).json(new ApiResponse(400,{},"username or email already exists"))
+    // throw new ApiError(400, "username or email already exists");
   }
   const user = await User.create({
     username,
@@ -39,6 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
   });
   if (!user) {
+    return res.status(500).json(new ApiResponse(400,{},"internal error while registering user"))
     throw new ApiError(500, "internal error while registering user");
   }
 
@@ -47,6 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
+    return res.status(500).json(new ApiResponse(400,{},"internal error while registering user"))
     throw new ApiError(500, "internal error while registering user");
   }
   return res
@@ -57,23 +61,27 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
   if ((!username && !email) || !password) {
+    return res.status(400).json(new ApiResponse(400,{},"all fields are required"))
     throw new ApiError(400, "all fields are required");
   }
   const user = await User.findOne({
     $or: [{ username }, { email }],
   });
   if (!user) {
+    return res.status(400).json(new ApiResponse(400,{},"all fields are required"))
     throw new ApiError(400, "user does not exists");
   }
 
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
+    return res.status(400).json(new ApiResponse(400,{},"invalid credentials"))
     throw new ApiError(400, "invalid credentials");
   }
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
   if (!accessToken || !refreshToken) {
+    return res.status(500).json(new ApiResponse(400,{},"internal error while generating access and refresh token"))
     throw new ApiError(
       500,
       "internal error while generating access and refresh token"
