@@ -50,16 +50,15 @@ userSchema.methods.generateAccessToken = async function () {
 };
 
 userSchema.methods.generateRefreshToken = async function () {
-    return jwt.sign(
-      {
-        _id: this._id,
-        
-      },
-      process.env.ACCESS_REFRESH_SECRET,
-      {
-        expiresIn: process.env.ACCESS_REFRESH_EXPIRY,
-      }
-    );
-  };
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const User = mongoose.model("User", userSchema);

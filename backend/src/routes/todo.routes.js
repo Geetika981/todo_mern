@@ -7,12 +7,13 @@ import {
 } from "../controllers/todo.controller.js";
 import { Router } from "express";
 const router = Router();
+router.route("/create").post(verifyJWT, createTodo);
+router.route("/all-todo").get(verifyJWT, listAllTodos);
+
 router
   .route("/:todoId")
-  .post(verifyJWT, updateTodo)
+  .patch(verifyJWT, updateTodo)
   .delete(verifyJWT, deleteTodo);
 
-router.route("/create").post(verifyJWT,createTodo);
-router.route("/all-todo").get(verifyJWT,listAllTodos);
 
 export default router;

@@ -1,5 +1,5 @@
 import { isValidObjectId } from "mongoose";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Todo } from "../models/todo.models.js";
@@ -73,7 +73,7 @@ const createTodo = asyncHandler(async (req, res) => {
 const listAllTodos = asyncHandler(async (req, res) => {
   const allTodo = await Todo.aggregate([
     {
-      $match: new mongoose.Types.ObjectId(req.user?._id),
+      $match: { owner: new mongoose.Types.ObjectId(req.user?._id) },
     },
   ]);
   if (allTodo.length === 0) {
