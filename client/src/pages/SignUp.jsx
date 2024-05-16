@@ -17,10 +17,11 @@ function SignUp() {
   };
   // console.log(formData);
   const handleSubmit=async(e)=>{
+    e.preventDefault();
+  
     try {
       setLoading(true);
-      e.preventDefault();
-      const res=await fetch('http://localhost:8000/api/v1/user/register',{
+      const res=await fetch('http://localhost:4000/api/v1/user/register',{
         method:"POST",
         headers:{
           'Content-Type':"application/json"
@@ -61,7 +62,7 @@ function SignUp() {
           onChange={handleData}
         />
         <input
-          type="text"
+          type="password"
           className="border p-3 rounded-lg hover:p-4"
           placeholder="password*"
           id="password"

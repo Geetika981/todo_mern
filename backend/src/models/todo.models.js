@@ -4,7 +4,6 @@ const todoSchema=new mongoose.Schema({
     owner:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
-
     },
     title:{
         type:String,
