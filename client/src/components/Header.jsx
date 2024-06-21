@@ -1,41 +1,46 @@
 import React from "react";
-import { FaSearch } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutSuccess } from "../redux/user/userSlice.js";
 import { Link } from "react-router-dom";
-function Header() {
+const Header = () => {
+  const { currentuser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const logoutHandler = async () => {
+    const response = await fetch("http://localhost:4000/api/v1/user/logout");
+    const data = await response.json();
+    dispatch(logoutSuccess());
+  };
   return (
-    <header className="bg-slate-200 shadow-md ">
-      <div className="flex justify-between mx-auto max-w-6xl p-3">
-        <Link to={"/"}>
-          <h1 className="font-bold text-sm sm:text-lg ">ToDoList</h1>
-        </Link>
-        <form className="bg-slate-100 p-3 rounded-lg flex items-center">
-          <input
-            className="bg-transparent focus:outline-none w-24 sm:w-64"
-            type="text"
-            placeholder="Search..."
-          />
-          <FaSearch className="text-slate-500" />
-        </form>
-        <ul className="flex gap-4 ">
-          <Link to={"/"}>
-            <li className="hidden sm:inline text-slate-900 hover:underline">
-              Home
-            </li>
-          </Link>
+    <header className="flex justify-between mx-auto p-4 bg-slate-300 w-[100%]">
+      <div className="text-2xl">
+        <Link to={"/"}> ToDoList </Link>
+      </div>
+      {currentuser ? (
+        <ul className="flex gap-4">
           <Link to={"/about"}>
-            <li className="hidden sm:inline text-slate-900 hover:underline">
-              About
-            </li>
+            <li>About</li>
           </Link>
-          <Link to={"/sign-in"}>
-            <li className="  text-slate-900 hover:underline">
-              Sign-in
-            </li>
+          <Link to={"/todos"}>
+            <li>Todos</li>
+          </Link>
+          <Link to={"/profile"}>
+            <li>profile</li>
+          </Link>
+
+         
+        </ul>
+      ) : (
+        <ul className="flex gap-4">
+          <Link to={"/signin"}>
+            <li>SignIn</li>
+          </Link>
+          <Link to={"/signup"}>
+            <li>SignUp</li>
           </Link>
         </ul>
-      </div>
+      )}
     </header>
   );
-}
+};
 
 export default Header;

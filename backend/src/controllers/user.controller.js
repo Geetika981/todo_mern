@@ -107,7 +107,6 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-
 const logoutUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id);
   user.refreshToken = undefined;
@@ -125,6 +124,10 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const getUser=asyncHandler(async(req,res)=>{
+  // const {id}=req.params;
+  // if(req.user._id!==id){
+  //   throw new ApiError(400,"Ypu can view your profile only");
+  // }
   const user=await User.findById(req.user._id).select("-password -refreshToken");
   
   return res.status(200).json(new ApiResponse(200,user,"user fetched successfully"));
