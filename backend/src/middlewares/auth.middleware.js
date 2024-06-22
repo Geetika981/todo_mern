@@ -6,7 +6,7 @@ import { User } from "../models/user.models.js";
 const verifyJWT=asyncHandler(async(req,res,next)=>{
     const token=req.cookies?.accessToken;
     if(!token){
-        throw new ApiError(400,"Unauthorized Access");
+        throw new ApiError(400,"Unauthorized Accessss");
     }
     const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
     if(!decodedToken){

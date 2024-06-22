@@ -1,8 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 function About() {
+  const {currentuser}=useSelector(state=>state.user);
   return (
-    <div>About</div>
+    <div>
+        {currentuser.about}
+    </div>
   )
 }
 

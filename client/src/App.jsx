@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Profile from "./pages/Profile.jsx";
 import Todos from "./pages/Todos.jsx";
+import NewTodo from "./pages/NewTodo.jsx";
 
 function App() {
   
@@ -21,6 +22,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/todos" element={<Todos/>} />
+          <Route path="/newtodo" element={<NewTodo/>} />
         </Route>
       </Routes>
     </BrowserRouter>

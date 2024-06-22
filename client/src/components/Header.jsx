@@ -20,14 +20,15 @@ const Header = () => {
           <Link to={"/about"}>
             <li>About</li>
           </Link>
+          <Link to={"/newtodo"}>
+            <li>NewTodo</li>
+          </Link>
           <Link to={"/todos"}>
             <li>Todos</li>
           </Link>
           <Link to={"/profile"}>
             <li>profile</li>
           </Link>
-
-         
         </ul>
       ) : (
         <ul className="flex gap-4">

@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
+import bcrypt from "bcrypt";
 
 const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
@@ -38,14 +39,11 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "enter a valid email id");
   }
 
-
-
   const user = await User.create({
     username,
     email,
     about,
     password,
-    
   });
   if (!user) {
     throw new ApiError(500, "internal error while registering user");
@@ -83,7 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
-  console.log({accessToken,refreshToken});
+  // console.log({accessToken,refreshToken});
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -95,9 +93,19 @@ const loginUser = asyncHandler(async (req, res) => {
   };
 
   return res
+    .cookie("accessToken", accessToken, {
+      path: "/",
+      httpOnly: true,
+      same_site: "none",
+      secure: true,
+    })
+    .cookie("refreshToken", refreshToken, {
+      path: "/",
+      httpOnly: true,
+      same_site: "none",
+      secure: true,
+    })
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
@@ -123,14 +131,41 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "user logout successfully"));
 });
 
-const getUser=asyncHandler(async(req,res)=>{
-  // const {id}=req.params;
-  // if(req.user._id!==id){
-  //   throw new ApiError(400,"Ypu can view your profile only");
-  // }
-  const user=await User.findById(req.user._id).select("-password -refreshToken");
-  
-  return res.status(200).json(new ApiResponse(200,user,"user fetched successfully"));
-})
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select(
+    "-password -refreshToken"
+  );
 
-export { registerUser, loginUser, logoutUser,getUser };
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "user fetched successfully"));
+});
+
+const updateUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (id !== req.user._id) {
+    throw new ApiError(400, "You can Update Your account only");
+  }
+  const { username, email, password } = req.body;
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        username,
+        email,
+        password: await bcrypt.hash(password, 10),
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  if (!updatedUser) {
+    throw new ApiError(500, "internal error while updating details");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "user updated successfully"));
+});
+
+export { registerUser, loginUser, logoutUser, getUser, updateUser };

@@ -3,19 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate=useNavigate()
-  const [formdata, setFormdata] = useState({
-    username: "",
-    email: "",
-    password: "",
-    about: "",
-  });
+  const [formdata, setFormdata] = useState({});
+  const [error,setError]=useState(false);
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.id]: e.target.value });
-    console.log(formdata);
   };
+  // console.log(formdata);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setError(false);
       const response = await fetch("http://localhost:4000/api/v1/user/register", {
         method: "POST",
         headers: {
@@ -24,20 +21,26 @@ const SignUp = () => {
         body: JSON.stringify(formdata),
       });
       const data = await response.json();
+      if(data.success==false){
+          setError(true);
+          return;
+      }
   
       console.log(data);
       navigate('/signin');
     } catch (error) {
+      setError(true);
         console.log(error)
-        navigate('/signup')
+        // navigate('/signup')
     }
   };
   return (
+    <div className="w-[50%] mx-auto  flex flex-col gap-4">
+      <h1 className="mx-auto text-3xl uppercase mt-20">Register</h1>
     <form
-      className="w-[50%] mx-auto  flex flex-col gap-4"
+      className="flex flex-col gap-4"
       onSubmit={handleSubmit}
     >
-      <h1 className="mx-auto text-3xl uppercase mt-20">Register</h1>
       <input
         id="username"
         className="p-3 mt-10"
@@ -66,14 +69,16 @@ const SignUp = () => {
         placeholder="about"
         onChange={handleChange}
       />
-      <button className="p-3 " type="submit">
+      <button className="p-3" type="submit">
         SignUp
       </button>
+    </form>
       <div>
         <p>Already have an account?</p>
-        <Link to={"/signin"}>SignIn</Link>
+        <Link to={"/signin"} className="font-serif ">SignIn</Link>
       </div>
-    </form>
+      <p>{error && "Something went wrong"}</p>
+    </div>
   );
 };
 
