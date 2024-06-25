@@ -142,27 +142,28 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  if (id !== req.user._id) {
-    throw new ApiError(400, "You can Update Your account only");
+  const { username, email, password, about } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(400, "unauthorized access");
   }
-  const { username, email, password } = req.body;
-  const updatedUser = await User.findByIdAndUpdate(
-    id,
-    {
-      $set: {
-        username,
-        email,
-        password: await bcrypt.hash(password, 10),
-      },
-    },
-    {
-      new: true,
-    }
-  );
-  if (!updatedUser) {
-    throw new ApiError(500, "internal error while updating details");
+
+  if (password) {
+    user.password = password;
   }
+  if (username) {
+    user.username = username;
+  }
+  if (email) {
+    user.email = email;
+  }
+  if (about) {
+    user.about = about;
+  }
+  await user.save({ validateBeforeSave: false });
+  const updatedUser = await User
+    .findById(req.user._id)
+    .select("-password -refreshToken ");
   return res
     .status(200)
     .json(new ApiResponse(200, updatedUser, "user updated successfully"));

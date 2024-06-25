@@ -11,36 +11,38 @@ const Header = () => {
     dispatch(logoutSuccess());
   };
   return (
-    <header className="flex justify-between mx-auto p-4 bg-slate-300 w-[100%]">
-      <div className="text-2xl">
-        <Link to={"/"}> ToDoList </Link>
-      </div>
-      {currentuser ? (
-        <ul className="flex gap-4">
-          <Link to={"/about"}>
-            <li>About</li>
-          </Link>
-          <Link to={"/newtodo"}>
-            <li>NewTodo</li>
-          </Link>
-          <Link to={"/todos"}>
-            <li>Todos</li>
-          </Link>
-          <Link to={"/profile"}>
-            <li>profile</li>
-          </Link>
-        </ul>
-      ) : (
-        <ul className="flex gap-4">
-          <Link to={"/signin"}>
-            <li>SignIn</li>
-          </Link>
-          <Link to={"/signup"}>
-            <li>SignUp</li>
-          </Link>
-        </ul>
-      )}
-    </header>
+    <div className="bg-slate-300 w-[100%]">
+      <header className="flex justify-between mx-auto p-4  w-[90%]">
+        <div className="text-2xl">
+          <Link to={"/"}> ToDoList </Link>
+        </div>
+        {currentuser ? (
+          <ul className="flex gap-4">
+            <Link to={"/newtodo"}>
+              <li>NewTodo</li>
+            </Link>
+            <Link to={"/todos"}>
+              <li>Todos</li>
+            </Link>
+            <Link to={"/about"}>
+              <li>About</li>
+            </Link>
+            <Link to={"/profile"}>
+              <li>Profile</li>
+            </Link>
+          </ul>
+        ) : (
+          <ul className="flex gap-8">
+            <Link to={"/signin"}>
+              <li>Sign-in</li>
+            </Link>
+            <Link to={"/signup"}>
+              <li>Sign-up</li>
+            </Link>
+          </ul>
+        )}
+      </header>
+    </div>
   );
 };
 

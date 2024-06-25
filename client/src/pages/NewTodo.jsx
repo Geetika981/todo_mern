@@ -30,24 +30,24 @@ const NewTodo = () => {
     }
   };
   return (
-    <div className="w-[50%] mx-auto my-[13%]  flex flex-col gap-4">
+    <div className="w-[50%] mx-auto my-[8%]  flex flex-col gap-10">
       <h1 className='font-bold mx-auto text-2xl'>CREATE NEW TODO HERE</h1>
-      <form onClick={handleSubmit} className='flex flex-col gap-4'>
+      <form onClick={handleSubmit} className='flex flex-col gap-6'>
         <input
           type="text"
           placeholder="title"
           onChange={handleChange}
           id="title"
-          className='p-3'
+          className='p-3 rounded-xl'
         />
-        <input
+        <textarea
           type="text"
           placeholder="description"
           onChange={handleChange}
           id="description"
-          className='p-3'
+          className='p-3 rounded-xl'
         />
-        <button type="submit">Create Todo</button>
+        <button type="submit" className='rounded-xl bg-blue-900 p-4 text-white uppercase'>Create Todo</button>
       </form>
     </div>
   );

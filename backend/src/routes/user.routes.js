@@ -10,5 +10,5 @@ router.route('/login').post(loginUser);
 router.route('/logout').post(verifyJWT,logoutUser);
 
 router.route('/userProfile').get(verifyJWT,getUser);
-router.route('/update/:id').post(verifyJWT,updateUser);
+router.route('/update').patch(verifyJWT,updateUser);
 export default router;

@@ -5,35 +5,36 @@ import {
   signInFailure,
   signInSuccess,
 } from "../redux/user/userSlice.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [formdata, setFormdata] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {error,loading}=useSelector(state=>state.user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(signInStart());
       const response = await fetch("http://localhost:4000/api/v1/user/login", {
-        credentials:'include',
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Origin':'http://localhost:4000'
+          Origin: "http://localhost:4000",
         },
         body: JSON.stringify(formdata),
       });
       const data = await response.json();
       console.log(data);
       if (data.success == false) {
-        dispatch(signInFailure());
+        dispatch(signInFailure(data.message));
         return;
       }
       dispatch(signInSuccess(data.data.user));
 
-      navigate("/profile");
+      navigate("/todos");
     } catch (error) {
       dispatch(signInFailure(error));
     }
@@ -43,34 +44,40 @@ const SignIn = () => {
   };
   console.log(formdata);
   return (
-    <form
-      className="w-[50%] mx-auto  flex flex-col gap-4"
-      onSubmit={handleSubmit}
-    >
-      <h1 className="mx-auto text-3xl uppercase mt-20">Login</h1>
-      <input
-        id="username"
-        className="p-3 mt-10 "
-        type="text"
-        placeholder="username"
-        onChange={handleChange}
-      />
-      <input
-        id="password"
-        className="p-3 "
-        type="password"
-        placeholder="password"
-        onChange={handleChange}
-      />
+    <div>
+      <form
+        className="w-[50%] mx-auto  flex flex-col gap-4"
+        onSubmit={handleSubmit}
+      >
+        <h1 className="mx-auto text-3xl uppercase mt-20">Login</h1>
+        <input
+          id="username"
+          className="p-3 mt-10 rounded-xl "
+          type="text"
+          placeholder="username"
+          onChange={handleChange}
+        />
+        <input
+          id="password"
+          className="p-3 rounded-xl "
+          type="password"
+          placeholder="password"
+          onChange={handleChange}
+        />
 
-      <button className="p-3 " type="submit">
-        SignIn
-      </button>
-      <div>
-        <p>Don't have an account?</p>
-        <Link to={"/signup"}>SignUp</Link>
-      </div>
-    </form>
+        <button disabled={loading} className="p-3 bg-blue-600 text-white rounded-xl" type="submit">
+         { loading?"Loading...":"Sign-in"}
+        </button>
+        <div className="flex gap-4">
+          <p>Don't have an account?</p>
+          <Link to={"/signup"} className="text-blue-900">
+            SignUp
+          </Link>
+        </div>
+        <p className="text-red-800 italics">{error && error}</p>
+      </form>
+
+    </div>
   );
 };
 

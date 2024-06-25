@@ -6,6 +6,7 @@ const SignUp = () => {
   const [formdata, setFormdata] = useState({});
   const [error,setError]=useState(false);
   const handleChange = (e) => {
+    setError(false);
     setFormdata({ ...formdata, [e.target.id]: e.target.value });
   };
   // console.log(formdata);
@@ -43,41 +44,41 @@ const SignUp = () => {
     >
       <input
         id="username"
-        className="p-3 mt-10"
+        className="p-3 mt-10 rounded-xl"
         type="text"
         placeholder="username "
         onChange={handleChange}
       />
       <input
         id="email"
-        className="p-3 "
+        className="p-3 rounded-xl"
         type="text"
         placeholder="email"
         onChange={handleChange}
       />
       <input
         id="password"
-        className="p-3 "
+        className="p-3 rounded-xl "
         type="password"
         placeholder="password"
         onChange={handleChange}
       />
-      <input
+      <textarea
         id="about"
-        className="p-3 "
+        className="p-3 rounded-xl "
         type="text"
         placeholder="about"
         onChange={handleChange}
       />
-      <button className="p-3" type="submit">
-        SignUp
+      <button className="p-3 bg-blue-600 text-white rounded-xl" type="submit">
+        Sign-up
       </button>
     </form>
-      <div>
-        <p>Already have an account?</p>
-        <Link to={"/signin"} className="font-serif ">SignIn</Link>
+      <div className="flex gap-4">
+        <p className="">Already have an account?</p>
+        <Link to={"/signin"} className="font-serif text-blue-900 ">SignIn</Link>
       </div>
-      <p>{error && "Something went wrong"}</p>
+      <p className="text-red-900">{error && "Something went wrong!!"}</p>
     </div>
   );
 };
